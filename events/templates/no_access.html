@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %} Page Not Found {% endblock title %}
+{% block body %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+      <h1 class="masthead-heading mb-0">Oops Error 404</h1>
+      <h2 class="masthead-subheading mb-0">It seems like, page is not found</h2>
+      {% if request.user.is_anonymous %}
+        <a href="" class="btn btn-primary btn-xl rounded-pill mt-5">Error 404</a>
+      {% else %}
+        <a href="{%url 'app:home'%}" class="btn btn-primary btn-xl rounded-pill mt-5">Go to Homepage</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+
+
+
+{% endblock %}
+
+
+

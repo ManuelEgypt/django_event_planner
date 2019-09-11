@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block body %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+    	<!-- bootdtrap grid system consisting of rows and columns -->
+    	<div class="row">   <!-- start of row before for loop-->  
+
+    	{%for event in events%}
+
+    	<div class="col-12 col-xl-3 col-lg-4 col-md-6 my-3"> <!-- start of column after for loop -->
+
+
+    	{%if event.image%}      <!-- if image available display it else display default image -->
+    		<a href = "{{event.get_absolute_url}}" ><img src={{event.image.url}} style= "height:150px" alt="event image"></a>
+    	{%else%}
+    		<a href = "{{event.get_absolute_url}}" ><img src="{%static 'default.png'%}" style= "height:150px"alt="default image"></a> 
+    	{%endif%} 
+
+
+
+    	
+    		<!-- using absolute url to hyperlink event to its detail page -->
+    		<!-- cleaner as url name is only written in get_absolute_url function in event model -->
+    		<h3>{{event.name}}</h3>
+    		<h4>{{event.datetime}}</h4>
+    		BY: <a href = "{%url 'app:org-profile' event.owner.profile.orgprofile.slug%}" >{{event.owner.profile.orgprofile.org_name}} </a> <br>
+    		<a href = "{%url 'app:detail' event.slug%}" > <button class="btn bg-info"> Read More </button> </a>
+
+
+    		<!-- OR -->
+
+    		<!-- using url tag to hyperlink event to its detail page -->
+    		<!-- if url name changed in urls file it should be changed in all url tags -->
+  
+
+    	</div> <!-- end of column -->
+
+    	{%endfor%}
+
+    	</div> <!-- end of row -->
+
+    	
+
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock %}

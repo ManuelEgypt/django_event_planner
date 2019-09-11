@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{%block title%} New Event {%endblock%}
+{% block body %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+ 	<div class="my-5">   
+		<form method = "POST" action = "{% url 'app:create' %}" enctype="multipart/form-data">
+			{%csrf_token%}
+			{{form|crispy}}
+			<input type="submit" value="Create Event">
+		</form>
+	</div>
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock %}

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,10 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'events',
-
     'crispy_forms',
+    'events_api',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -104,7 +104,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPE': 'Bearer',
+
+    'TOKEN_LIFETIME': timedelta(days=1),
+
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'manuel126519@gmail.com'
+EMAIL_HOST_PASSWORD = 'mM228199400' 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 

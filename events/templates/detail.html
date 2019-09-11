@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{%load tz%}
+{%block title%} {{event.name}} {%endblock%}
+{% block body %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+  		{%if event.image%}     
+  			<img src={{event.image.url}} alt="event image">
+  		{%else%}
+  			<img src="{%static 'default.png'%}" alt="default image">
+  		{%endif%} 
+  		<h2> Welcome to the {{event.name|upper}} Event!</h2>
+      <h3> Venue: {{event.location}} </h3>
+      <h4> on {{event.datetime}} </h4>
+  		<h4>More about it: </h4>
+  		<p>{{event.description}} <p>
+    </div>
+
+  <br>			
+    {%if request.user == event.owner%}
+      <div class="container">
+        <h1> Booked users:</h1>
+        <br>
+        {%for booking in bookings%}
+          <h6>{{booking.user.profile.userprofile.full_name}} - {{booking.desired_seats}} seat(s)</h6>
+          <br>
+        {%endfor%}   
+      </div>
+      {%if not event.is_past%}
+      <a href = "{%url 'app:update' event.slug%}" > <button class="btn"> UPDATE </button> </a>
+      <a href = "{%url 'app:delete' event.slug%}" > <button class="btn"> DELETE </button> </a>
+      {%endif%}
+    {%endif%}      
+    <br>
+    <br>
+
+    {%if event.is_past%}
+       <button class="btn text-danger"> EVENT ENDED </button> </a>
+		{%elif event.available_seats != 0 %}
+      {%if request.user != event.owner%}
+      {%if not request.user.profile.is_organiser%}
+    	<a href = "{%url 'app:booking-create' event.slug%}" > <button class="btn"> BOOK </button> </a>
+      {%endif%}
+      {%endif%}
+    {%else%}
+    			<button class="btn text-danger"> FULL </button>
+    {%endif%}
+    	
+
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block title %} Signin {% endblock title %}
+{% load crispy_forms_tags %}
+{% block body %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+
+    <h6>Followers count:<a href = "{%url 'app:followers' organiser.slug%}" > {{followers}} 
+    </a> </h6>
+    <h2> Organisation Name:{{organiser.org_name}}</h2>
+    <p>{{organiser.org_description}}<p>
+    <br>
+    <br>
+    {%if not request.user.profile.is_organiser%}
+      {%if following%}
+      <a href = "{%url 'app:org-unfollow' organiser.slug%}" > <button class="btn"> UNFOLLOW </button> 
+      </a>
+      {%else%}
+      <a href = "{%url 'app:org-follow' organiser.slug%}" > <button class="btn"> FOLLOW </button> </a>
+      {%endif%}
+    {%elif request.user == organiser.profile.user%}
+      <a href = "{%url 'app:update-organiser'%}" > <button class="btn"> UPDATE PROFILE </button> </a>
+    {%endif%}
+
+
+        <h1 class="my-5"> UPCOMING EVENTS:</h1>
+        <div class="container">
+            <div class="row"> 
+            {%for event in upcoming_events%}
+                    <div class="col-12 col-xl-3 col-lg-4 col-md-6">
+                        {%if event.image%}
+                          <a href = "{{event.get_absolute_url}}" ><img src={{event.image.url}} style="height:150px" alt="event image"> </a>
+                        {%else%}
+                          <a href = "{{event.get_absolute_url}}" ><img src="{%static 'default.png'%}" style= "height:150px"alt="default image"></a> 
+                        {%endif%} 
+                          <h3>{{event.name}}</h3>
+                          <h4>{{event.datetime}}</h4>
+                          <h6>by: {{event.owner}}</h6>
+                    </div>
+            {%endfor%}
+        </div>
+        </div>
+
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock %}

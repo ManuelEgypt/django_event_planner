@@ -1,18 +1,17 @@
+
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block body %}
 <header class="masthead text-center text-white">
   <div class="masthead-content">
     <div class="container">
-        <div class="jumbotron">
-          <h2 class="masthead-subheading mb-0">Sign Up</h2>
-          <form action="{% url 'app:signup' %}" method="POST">
-            {% csrf_token %}
-            {{form|crispy}}
-            {{user_form|crispy}}
-            <input class = "btn btn-primary btn-xl rounded-pill mt-5" type="submit" value="Sign Up">
-          </form>
-      </div>
+    	<div>   <!-- jumbotron form container-->
+    		<form method = "POST" action = "{% url 'app:update' event.slug %}" enctype="multipart/form-data">
+    		{%csrf_token%}
+    		{{form|crispy}}
+    		<input type="submit" value="Update Event">
+    		</form>
+    	</div>                      <!-- end of jumbotron form -->
     </div>
   </div>
   <div class="bg-circle-1 bg-circle"></div>

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %} 
+{% load crispy_forms_tags %}
+{%block title%} {{request.user.first_name}}'s Dashboard {%endblock%}
+{% block body %}
+<header class="masthead text-center text-white">
+    <div class="masthead-content">
+    {%if request.user.profile.is_organiser%}
+      <a href = "{%url 'app:create'%}" > <button class="btn btn-primary btn-xl rounded-pill"> CREATE EVENT </button> </a>
+      <h1 class="my-5">PAST EVENTS PLANNED:</h1>
+        <div class="container">
+    		<div class="row">
+        		{%for event in past_events%}
+            		{%if request.user == event.owner%}
+                		<div class="col-12 col-xl-3 col-lg-4 col-md-6"> 
+                    		{%if event.image%}
+                    			<a href = "{{event.get_absolute_url}}"><img src={{event.image.url}} style="height:150px" alt="event image"> </a>
+                    		{%else%}
+                    			<a href = "{{event.get_absolute_url}}"><img src="{%static 'default.png'%}" alt="default image" style="height:150px"></a>
+                    		{%endif%} 
+                    			<h4> {{event.name}} - {{event.datetime}} </h4>
+                		</div> 
+            		{%endif%}
+        		{%endfor%}
+    		</div> 
+        </div>
+    <br>
+        <h1 class="my-5"> UPCOMING EVENTS:</h1>
+        <div class="container">
+            <div class="row"> 
+        		{%for event in upcoming_events%}
+            		{%if request.user == event.owner%}
+                		<div class="col-12 col-xl-3 col-lg-4 col-md-6">
+                	    	{%if event.image%}
+                	    		<a href = "{{event.get_absolute_url}}" ><img src={{event.image.url}} style="height:150px" alt="event image"> </a>
+                	    	{%else%}
+                	    		<a href = "{{event.get_absolute_url}}" ><img src="{%static 'default.png'%}" style= "height:150px"alt="default image"></a> 
+                	    	{%endif%} 
+                	    		<h3>{{event.name}}</h3>
+                	    		<h4>{{event.datetime}}</h4>
+                	    		<h6>by: {{event.owner}}</h6>
+                		</div>
+            		{%endif%}
+        		{%endfor%}
+    		</div>
+        </div>
+    {%endif%}
+
+    <br>
+
+    {%if not request.user.profile.is_organiser%}
+        <h1 class="my-5"> UPCOMING BOOKINGS:</h1>
+        <div class="container">
+        		{%for booking in upcoming_events%}                        		
+            		 <h5>Event: {{booking.event}}</h5> <h6>Seats:{{booking.desired_seats}}</h6> <br> <br>
+        		{%endfor%}
+        </div>
+    <br>
+        <h1 class="my-5"> PAST BOOKINGS:</h1>
+        <div class="container">
+                {%for booking in past_bookings%}                                
+                     <h5>Event: {{booking.event}}</h5> <h6>Seats:{{booking.desired_seats}}</h6> <br> <br>
+                {%endfor%}
+        </div>
+    {%endif%}
+
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock %}

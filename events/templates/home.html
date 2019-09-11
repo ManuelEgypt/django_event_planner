@@ -1,16 +1,28 @@
 {% extends "base.html" %}
-
-{% block content %}
+{% block title %}HomePage{% endblock title %}
+{% block body %}
 <header class="masthead text-center text-white">
   <div class="masthead-content">
     <div class="container">
-      <h1 class="masthead-heading mb-0">All the events,</h1>
-      <h2 class="masthead-subheading mb-0">You could ever want...</h2>
-      {% if request.user.is_anonymous %}
-        <a href="{% url 'signup' %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up to find events!</a>
-      {% else %}
-        <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Find events!</a>
-      {% endif %}
+      {%if not request.user.profile.is_organiser%}
+        <h1 class="masthead-heading mb-0">All the events,</h1>
+        <h2 class="masthead-subheading mb-0">You could ever want...</h2>
+        {% if request.user.is_anonymous %}
+          <a href="{% url 'app:signup' %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up to find events!</a>
+        {% else %}
+          <a href="{%url 'app:list'%}" class="btn btn-primary btn-xl rounded-pill mt-5">Find events!</a>
+        {% endif %}
+
+        {%else%}
+        <h1 class="masthead-heading mb-0">The Biggest Gathering,</h1>
+        <h2 class="masthead-subheading mb-0">For all the Event Organisers...</h2>
+        {% if request.user.is_anonymous %}
+          <a href="{% url 'app:signup' %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up to find events!</a>
+        {% else %}
+          <a href="{%url 'app:dashboard'%}" class="btn btn-primary btn-xl rounded-pill mt-5">Go to Dashboard!</a>
+        {% endif %}
+      {%endif%}
+
     </div>
   </div>
   <div class="bg-circle-1 bg-circle"></div>
