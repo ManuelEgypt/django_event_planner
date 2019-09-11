@@ -129,7 +129,7 @@ EMAIL_HOST_PASSWORD = 'mM228199400'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kuwait'
 
 USE_I18N = True
 

@@ -94,7 +94,7 @@ def org_signup(request):
 def signin(request):
     #permission ---start---
     if not request.user.is_anonymous:   
-        return redirect('app:no-access')
+        return redirect('app:home')
     #permision ----end-----
     form= SigninForm()
     if request.method == "POST":
