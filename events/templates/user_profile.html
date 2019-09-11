@@ -5,7 +5,7 @@
 <header class="masthead text-center text-white">
   <div class="masthead-content">
 
-    <h6>Organizers Followed:<a href = "{%url 'app:following' user_obj.slug%}" > {{followers}} 
+    <h6>Organizers Following:<a href = "{%url 'app:following' user_obj.slug%}" > {{followers}} 
     </a> </h6>
     <h2> Name:{{user_obj.full_name}}</h2>
     <br>
@@ -15,7 +15,7 @@
         <div class="container">
             {%for booking in upcoming_events%}                            
                  <h5>Event: {{booking.event}}</h5> <h6>Seats:{{booking.desired_seats}}</h6>
-                 <a href = "{%url 'app:booking-delete' booking.id%}" > <button class="btn"> DELETE </button> </a> <br> <br>
+                 <a href = "{%url 'app:booking-delete' booking.id%}" > <button class="btn"> CANCEL </button> </a> <br> <br>
             {%endfor%}
         </div>
     <br>

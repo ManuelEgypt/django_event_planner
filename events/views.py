@@ -107,7 +107,7 @@ def signin(request):
                 login(request,user_obj)
                 if request.user.profile.is_organiser:
                     messages.success(request,'Welcome back %s!' %(user_obj.profile.orgprofile.org_name))
-                    return redirect('app:') 
+                    return redirect('app:dashboard') 
                 else:
                     messages.success(request,'Welcome back %s!' %(user_obj.profile.userprofile.full_name))
                     return redirect('app:list') 
@@ -287,17 +287,21 @@ def event_update(request,event_slug):
     if event.datetime < timezone.now():   
         return redirect ('app:no-access')
     #permision ----end-----
+    old_seats = event.seats
     form = EventForm(instance=event)
     if request.method == "POST":
         form = EventForm(request.POST, request.FILES, instance=event)
         if form.is_valid():
             event_obj = form.save(commit=False)
             date_time=datetime.combine(event_obj.date,event_obj.time)
+            event_obj.datetime = date_time
             if date_time < datetime.now():
                 messages.info (request, "cannot modify event to be in the past")
                 return redirect ('app:update', event_slug)
             else:
-                form.save()
+                additional_seats = event_obj.seats - old_seats
+                event_obj.available_seats += additional_seats 
+                event_obj.save()
                 messages.info (request, "event updated successfully")
                 return redirect (event_obj)
     context = {
@@ -388,7 +392,7 @@ def event_delete(request,event_slug):
         return redirect ('app:detail', event_slug)
     event.delete()
     messages.warning (request, "event deleted successfully")
-    return redirect('app:list')
+    return redirect('app:dashboard')
 
 
 def booking_delete(request,booking_id):
@@ -397,7 +401,8 @@ def booking_delete(request,booking_id):
     booking_time = booking.event.datetime
     days_dif = booking_time - timezone.now()
     #permission ---start---
-    print(days_dif.total_seconds())
+    print(days_dif.total_seconds()/3600)
+    print(timezone.now())
     if days_dif.total_seconds()/3600 < 3:  
         messages.warning (request, "cannot delete booking starting after 3 hours or less")
         return redirect('app:user-profile',user_slug)
