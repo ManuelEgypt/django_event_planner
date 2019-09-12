@@ -181,7 +181,7 @@ def event_detail(request,event_slug):
         return redirect('app:signin')
     #permision ----end-----
     event_obj = Event.objects.get(slug=event_slug)
-    bookings = Booking.objects.filter(event=event_obj)
+    bookings = Booking.objects.filter(event=event_obj) # event_obj.bookings
     print(event_obj.is_past())
     context = {
         "event": event_obj,
@@ -215,6 +215,8 @@ def event_create(request):
             subject = "%s is organising a new event: '%s'"% (event_obj.owner.profile.orgprofile.org_name,event_obj.name)
             message = "%s will be taking place in %s on %s, \nMore Details: %s"%(event_obj.name,event_obj.location,event_obj.datetime,event_obj.description)
             email_from = settings.EMAIL_HOST_USER
+            # __ = request.user.profile.orgprofile
+            # __.followers.all()
             sender_list = list(UserProfile.objects.filter(orgprofile=request.user.profile.orgprofile))
             e_sender_list = []
             for sender in sender_list:

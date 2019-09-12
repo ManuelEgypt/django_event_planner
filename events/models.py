@@ -10,12 +10,12 @@ from django.utils import timezone
 class Event(models.Model):
 	name = models.CharField(max_length = 30)
 	seats = models.IntegerField()
-	date = models.DateField(null=True)
+	date = models.DateField(null=True)		# redundant
 	datetime = models.DateTimeField(null=True)
-	time = models.TimeField(null=True)
+	time = models.TimeField(null=True)		# redudant
 	location = models.CharField(max_length = 30)
 	description = models.TextField()
-	available_seats = models.IntegerField()
+	available_seats = models.IntegerField()		# redundant - should be calculated in a model method
 	image = models.ImageField(null = True, blank = True)  
 	owner = models.ForeignKey(User, on_delete = models.CASCADE, related_name='events')
 	slug = models.SlugField(unique=True,blank=True)
@@ -41,6 +41,9 @@ class Event(models.Model):
 
 
 
+
+# DRY = Don't Repeat Yourself
+# ModelName parameter
 def create_slug(instance, new_slug=None):
 	slug = slugify(instance.name)
 	if new_slug is not None:
@@ -59,6 +62,7 @@ def create_slug(instance, new_slug=None):
 		return create_slug(instance, new_slug=new_slug)
 	return slug
 
+# More meaningful name
 @receiver(pre_save, sender=Event)
 def generate_slug(instance, *args, **kwargs):
 	if not instance.slug:
@@ -73,11 +77,11 @@ class Booking(models.Model):
 	def book_seat(self):
 		if self.event.available_seats >= self.desired_seats:
 			self.event.available_seats -= self.desired_seats
-			return True			
+			return True
 		else:
 			return False
 
-
+# Redundant
 class Profile(models.Model):
 	user = models.OneToOneField(User,on_delete=models.CASCADE)
 	is_organiser = models.BooleanField(default=False)
@@ -85,9 +89,8 @@ class Profile(models.Model):
 
 class UserProfile(models.Model):
 	profile = models.OneToOneField(Profile,on_delete=models.CASCADE)
-	full_name = models.CharField(max_length = 50)
-	profile_pic = models.ImageField(null = True, blank = True)
-	date_joined = models.DateField(auto_now_add=True)
+	full_name = models.CharField(max_length = 50)	# redundant
+	profile_pic = models.ImageField(null = True, blank = True)	# naming
 	slug = models.SlugField(unique=True,blank=True)
 
 
@@ -109,6 +112,7 @@ def create_slug3(instance, new_slug=None):
 		return create_slug3(instance, new_slug=new_slug)
 	return slug
 
+# More meaningful name
 @receiver(pre_save, sender=UserProfile)
 def generate_slug3(instance, *args, **kwargs):
 	if not instance.slug:
@@ -118,9 +122,9 @@ def generate_slug3(instance, *args, **kwargs):
 
 class OrgProfile(models.Model):
 	profile = models.OneToOneField(Profile,on_delete=models.CASCADE)
-	org_name = models.CharField(max_length = 30)
-	org_description = models.TextField()
-	org_logo = models.ImageField(null = True, blank = True)
+	org_name = models.CharField(max_length = 30)	# naming
+	org_description = models.TextField()	# naming
+	org_logo = models.ImageField(null = True, blank = True)	# naming
 	slug = models.SlugField(unique=True,blank=True)
 	followers = models.ManyToManyField(UserProfile)
 
@@ -144,6 +148,7 @@ def create_slug2(instance, new_slug=None):
 		return create_slug2(instance, new_slug=new_slug)
 	return slug
 
+# More meaningful name
 @receiver(pre_save, sender=OrgProfile)
 def generate_slug2(instance, *args, **kwargs):
 	if not instance.slug:

@@ -11,7 +11,7 @@ class IsBookingOwner(BasePermission):
 	message = "You must be the owner of this booking"
 	def has_object_permission(self, request, view, obj):
 
-		if request.user.is_staff or (obj.user == request.user):
+		if (request.user == obj.user) or (obj.user.profile.is_organiser):
 
 			return True
 

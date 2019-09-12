@@ -12,7 +12,6 @@
 
     	<div class="col-12 col-xl-3 col-lg-4 col-md-6 my-3"> <!-- start of column after for loop -->
 
-
     	{%if event.image%}      <!-- if image available display it else display default image -->
     		<a href = "{{event.get_absolute_url}}" ><img src={{event.image.url}} style= "height:150px" alt="event image"></a>
     	{%else%}

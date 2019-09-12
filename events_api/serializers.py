@@ -1,22 +1,38 @@
 from rest_framework import serializers
-
 from django.contrib.auth.models import User
-
+from django.contrib.auth import get_user_model
 from datetime import date
-
-from events.models import Event, Booking 
+from events.models import Event,Booking,Profile,OrgProfile,UserProfile 
 
 
 
 
 
 class EventSerializer(serializers.ModelSerializer):
+	owner = serializers.SlugRelatedField(
+
+		 read_only= True, slug_field = 'username')
 
 	class Meta:
-
 		model = Event
+		fields = ['name', 'seats', 'date', 'time','location','description','available_seats','owner']
 
-		fields = ['destination', 'time', 'price', 'id']
+
+class UserSerializer(serializers.ModelSerializer):
+	username = serializers.CharField(max_length=30)
+	password = serializers.CharField(max_length=30)
+	full_name = serializers.CharField(max_length=50)
+	email = serializers.EmailField()
+
+
+
+
+class OrgSignupSerializer(serializers.ModelSerializer):
+	username = serializers.CharField(max_length=30)
+	password = serializers.CharField(max_length=30)
+	org_name = serializers.CharField(max_length=50)
+	email = serializers.EmailField()
+	org_description = serializers.CharField(max_length=30)
 
 
 
@@ -24,59 +40,57 @@ class BookingSerializer(serializers.ModelSerializer):
 
 	event = serializers.SlugRelatedField(
 
-		 read_only= True, slug_field = 'destination')
+		 read_only= True, slug_field = 'name')
 
 	class Meta:
 
 		model = Booking
 
-		fields = ['event', 'date', 'id']
+		fields = ['event', 'user', 'desired_seats']
 
 
 
 
+class UserBookingSerializer(serializers.ModelSerializer):
 
-class BookingDetailsSerializer(serializers.ModelSerializer):
+	user = serializers.SlugRelatedField(
 
-	event = EventSerializer()
-
-	total = serializers.SerializerMethodField()
-
+		 read_only= True, slug_field = 'username')
 
 
 	class Meta:
 
 		model = Booking
 
-		fields = ['event', 'date', 'passengers', 'id', 'total']
+		fields = ['user']
 
 
 
-	def get_total(self, obj):
 
-		return obj.passengers * obj.event.price
+class OrganizerSerializer(serializers.ModelSerializer):
+
+	class Meta:
+
+		model = OrgProfile
+
+		fields = ['org_name', 'org_description']
 
 
 
-class AdminUpdateBookingSerializer(serializers.ModelSerializer):
 
+class BookEventSerializer(serializers.ModelSerializer):
+
+	event = serializers.SlugRelatedField(
+
+		 read_only= True, slug_field = 'name')
+		 	
 	class Meta:
 
 		model = Booking
 
-		fields = ['date', 'passengers']
+		fields = ['event', 'desired_seats']
 
 
-
-
-
-class UpdateBookingSerializer(serializers.ModelSerializer):
-
-	class Meta:
-
-		model = Booking
-
-		fields = ['passengers']
 
 
 
@@ -92,15 +106,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
+
+
     def create(self, validated_data):
 
         username = validated_data['username']
 
         password = validated_data['password']
-
-        first_name = validated_data['first_name']
-
-        last_name = validated_data['last_name']
 
         new_user = User(username=username, first_name=first_name, last_name=last_name)
 
@@ -112,13 +124,66 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['is_organiser']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['full_name','profile']
+
+
 class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(required=True)
+    userprofile = UserProfileSerializer(required=True)
+    class Meta:
+        model = User
+        fields = ['username', 'password','profile','userprofile']
 
-	class Meta:
+    def create(self, validated_data):
 
-		model = User
+        # create user 
+        user = User.objects.create(
+            username = validated_data['username'],
+            password = validated_data['password']
+            # etc ...
+        )
 
-		fields = ['first_name', 'last_name']
+        profile_data = validated_data.pop('profile')
+        # create profile
+        profile = Profile.objects.create(
+            user = user,
+            is_organiser = profile_data['is_organiser']   
+            # etc...
+        )
+
+
+        return user 
+
+
+
+# class ProfileCreateSerializer(serializers.ModelSerializer):
+#    username = serializers.CharField(source='user.username',max_length=30)
+
+#    class Meta:
+#        model = Profile
+#        fields = [
+#        'username',
+#        'is_organiser',
+#        ]
+
+#    def create (self, validated_data):
+#     user = get_user_model().objects.create(username=validated_data['username'])
+#     user.set_password(User.objects.make_random_password())
+#     user.save()
+
+#     profile = Profile.objects.create(user = user)
+
+#     return profile
 
 
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'events',
     'crispy_forms',
     'events_api',
+    'rest_framework',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -112,7 +113,6 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPE': 'Bearer',
 
     'TOKEN_LIFETIME': timedelta(days=1),
 
